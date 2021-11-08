@@ -9,7 +9,7 @@
 
 export class UserRepository {
 
-    map : Map<string,Customer>;
+    map : Map<string,Customer>
 
     constructor (){
         this.map = new Map();
