@@ -4,8 +4,9 @@
     lastname: string;
     age: number;
     id: string;
+    password : string;
+    email : string
 }
-
 
 export class UserRepository {
 
@@ -13,7 +14,7 @@ export class UserRepository {
 
     constructor (){
         this.map = new Map();
-    }
+}
 
 
     save(customer : Customer): Customer { 

@@ -3,14 +3,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app: Application = express();
 import { UserRepository,Customer} from './src/UserRepository';
-import {v4 as uuidv4} from 'uuid';
-
+import {v4 as uuidv4} from 'uuid'
+const bcrypt = require ('bcryptjs');
 
 const userRepository = new UserRepository()
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(bodyParser.urlencoded({ extended: true }))
 
 
 app.post('/customers', (req : Request, res: Response) => {
@@ -19,47 +18,23 @@ app.post('/customers', (req : Request, res: Response) => {
         firstname: req.body.firstname,
         lastname: req.body.lastname,
         age: req.body.age,
-        id: userId
+        id: userId,
+        email : req.body.email,
+        password : req.body.password
     }
     userRepository.save(customer);
     return res.status(201).send(customer);
 })
 
 
-app.put('/customers/:id', (req : Request, res: Response) => {
-    const userId = req.params.id
-    const customer: Customer = {
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        age: req.body.age,
-        id: userId
-    }
-    userRepository.update(customer);
-    return res.status(200).send(customer);
-})
-
-app.get('/customers/:id', (req :Request, res : Response) => {
-     const user = userRepository.getById(req.params.id);
-     return res.status(200).send(user);
-})
-
-app.get('/customers', (req : Request, res : Response) => {
-    const users = userRepository.getAll();
-    return res.status(200).send(users);
-})
-
-app.delete('/customers/:id', (req : Request, res: Response) => {
-    const users = userRepository.delete(req.params.id)
-    return res.status(200).send(users)
-})
-
-app.delete('/customers', (req : Request, res :Response)=> {
-    userRepository.clear()
-    return res.status(200).send('ALL_WAS_DELETE')
-})
-
 app.listen(3000, () => {
     console.log(`listening on port 3000`)})
 
+
+
+    app.use((req: Request, res: Response, next) => {
+        console.log('dany');
+        return next();
+    })
 
 
