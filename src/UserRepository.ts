@@ -14,7 +14,22 @@ export class UserRepository {
 
     constructor (){
         this.map = new Map();
-}
+    }
+
+    findByEmail(email: string): Customer {
+        let user: Customer = null;
+        const customers = this.map.values();
+        for(const customer of customers) {
+            if (customer.email === email) {
+                user = customer;
+                break;
+            }
+        }
+        if (!user) {
+           throw new Error('USER_NOT_FOUND');
+        }
+        return user;
+    }
 
 
     save(customer : Customer): Customer { 
@@ -61,7 +76,6 @@ export class UserRepository {
      clear(){
          this.map.clear()
      }
-
 }   
 
 
