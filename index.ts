@@ -1,23 +1,20 @@
 import { Request, Response, Application, NextFunction } from 'express';
 const express = require('express');
 const bodyParser = require('body-parser');
-const app: Application = express();
 import { UserRepository,Customer} from './src/UserRepository';
 import {v4 as uuidv4} from 'uuid'
+import { AuthenticatedRequest } from './src/types/AuthenticatedRequest';
 const bcrypt = require ('bcryptjs');
 const jwt = require('jsonwebtoken');
-const cookieParser = require('cookie-parser');
 const privateSecret = 'evibzefvbiaerbviaoerfeir'
 
 
-const userRepository = new UserRepository();
-
+export const userRepository = new UserRepository();
+export const app: Application = express();
 
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-
 
 
 app.post('/customers', async (req : Request, res: Response) => {
@@ -53,10 +50,11 @@ app.post('/customers/login', async (req: Request, res: Response) => {
 })
 
 // Creer un middleware qui va faire le .verify du token
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
         const authorization = req.headers.authorization.split(' ')[1];
-        const identity = jwt.verify(authorization,privateSecret)
+        const identity = jwt.verify(authorization,privateSecret);
+        req.user = identity;
         return next();
     } catch(e) {
         return res.sendStatus(401)
@@ -64,17 +62,24 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 })
 
 
-app.get('/customers/:id', (req :Request, res : Response) => {
+app.get('/customers/:id', (req: AuthenticatedRequest, res : Response) => {
+    console.log(req.user);
+    if (req.params.id !== req.user.id){
+        return res.sendStatus(401);
+    };
     const user = userRepository.getById(req.params.id);
     return res.status(200).send(user);
 })
 
-
-
-
-app.listen(3000, () => {
-    console.log(`listening on port 3000`)
+app.delete('/customers/:id',(req: Request,res: Response) =>{
+    userRepository.delete(req.params.id)
+    return res.sendStatus(200)
 })
+
+
+//app.listen(3000, () => {
+//    console.log(`listening on port 3000`)
+//})
 
 
 
