@@ -79,9 +79,5 @@ app.listen(3000, () => {
 
 
 
- app.use((req: Request, res: Response, next) => {
-     console.log('dany');
-    return next();
-})
 
 
