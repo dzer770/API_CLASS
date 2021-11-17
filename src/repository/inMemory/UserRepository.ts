@@ -1,16 +1,9 @@
+import { Customer } from "../../aggregates/Customer";
+import { UserRepository } from "../UserRepository";
 
- export type Customer = {
-    firstname: string;
-    lastname: string;
-    age: number;
-    id: string;
-    password : string;
-    email : string
-}
+export class InMemoryUserRepository implements UserRepository {
 
-export class UserRepository {
-
-    map : Map<string,Customer>
+    map : Map<string,Customer>;
 
     constructor (){
         this.map = new Map();
@@ -48,7 +41,7 @@ export class UserRepository {
     }
 
 
-    getById(id : string): Customer{
+    getById(id : string): Customer {
         const customer = this.map.get(id);
         if (!customer) {
             throw new Error('CUSTOMER_NOT_FOUND');
@@ -67,13 +60,13 @@ export class UserRepository {
     }
 
     
-    update(customer : Customer) {
+    update(customer : Customer): void {
         if (!this.exist(customer.id)) {
             throw new Error('CUSTOMER_NOT_FOUND');
         }
        this.map.set(customer.id,customer)
     }
-     clear(){
+     clear(): void {
          this.map.clear()
      }
 }   
