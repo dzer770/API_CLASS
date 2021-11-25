@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { Identity } from './Identity';
+import { Identity } from '../core/aggregates/Identity';
 
 export interface AuthenticatedRequest extends Request {
     user: Identity;

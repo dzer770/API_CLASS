@@ -1,5 +1,5 @@
-import { Customer } from "../../aggregates/Customer";
-import { UserRepository } from "../UserRepository";
+import { Customer } from "../../../core/aggregates/Customer";
+import { UserRepository } from "../../../core/repositories/UserRepository";
 
 export class InMemoryUserRepository implements UserRepository {
 
@@ -13,7 +13,7 @@ export class InMemoryUserRepository implements UserRepository {
         let user: Customer = null;
         const customers = this.map.values();
         for(const customer of customers) {
-            if (customer.email === email) {
+            if (customer.props.email === email) {
                 user = customer;
                 break;
             }
@@ -26,7 +26,7 @@ export class InMemoryUserRepository implements UserRepository {
 
 
     save(customer : Customer): Customer { 
-        this.map.set(customer.id, customer);
+        this.map.set(customer.props.id, customer);
         return customer;
     }
 
@@ -61,11 +61,12 @@ export class InMemoryUserRepository implements UserRepository {
 
     
     update(customer : Customer): void {
-        if (!this.exist(customer.id)) {
+        if (!this.exist(customer.props.id)) {
             throw new Error('CUSTOMER_NOT_FOUND');
         }
-       this.map.set(customer.id,customer)
+       this.map.set(customer.props.id,customer)
     }
+
      clear(): void {
          this.map.clear()
      }
